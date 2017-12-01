@@ -2,6 +2,7 @@
 #include <cstring>                          // utilizacao do memset
 #include <queue>                            // utilizacao da estrutura de dados fila
 #include <climits>                          // utlizacao do max_int
+#include <cstdio>
 
 #define maxn 10
 
@@ -28,7 +29,7 @@ bool breadthFirstSearch(int s, int t) {
         int u = q.front();                  // pega o primeiro vertice na fila
         q.pop();                            // retira o vertice
         // percorre a adjacencia do vertice atual
-        for (int v = 0; v < n; v++) {
+        for (int v = 1; v <= n; v++) {
             // se ainda nao foi visitado e existe adjacencia
             if (level[v] < 0 && g[u][v]) {
                 level[v] = level[u] + 1;    // seta o nivel da adjacencia como o nivel do vertice atual + 1
@@ -49,7 +50,7 @@ int depthFirstSearch(int u, int t, int flow) {
     if (u == t) return flow;                        // se chegou no target retorna o fluxo que chegou ate ele
 
     // percorre a adjacencia do vertice atual
-    for (int v = 0; v < n; v++) {
+    for (int v = 1; v <= n; v++) {
         // se o nivel da adjacencia for exatamente o nivel do vertice atual + 1 pode-se mandar o fluxo pra ele
         if (level[v] == level[u]+1 && g[u][v]) {
             int f = min(flow, g[u][v]);     // o fluxo que passa por esse caminho e o minimo entre o que passa por essa aresta e o fluxo que esta chegando
@@ -87,6 +88,23 @@ int dinicFlow(int s, int t) {
 int main (int argc, char *argv[]) {
 
     // Modelagem
+	int m, s, t; cin >> n >> m >> s >> t;
+	for (int i = 0; i < m; i++) {
+		int u, v, f; cin >> u >> v >> f;
+		g[u][v] = f;
+	}
+
+	printf("  ");
+	for (int i = 1; i <= n; i++) printf("%3d ", i);
+	puts("");
+	for (int i = 1; i <= n; i++) {
+		printf("%2d", i);
+		for (int j = 1; j <= n; j++) {
+			printf("%3d ", g[i][j]);
+		}cout << endl;
+	}cout << endl;
+
+	cout << dinicFlow(s, t) << endl;
 
     return 0;
 }

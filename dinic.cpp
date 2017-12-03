@@ -2,9 +2,10 @@
 #include <cstring>                          // utilizacao do memset
 #include <queue>                            // utilizacao da estrutura de dados fila
 #include <climits>                          // utlizacao do max_int
-#include <cstdio>
+#include <cstdio>                           // utilizacao de saida formatada
+#include <chrono>                           // medir o tempo
 
-#define maxn 10
+#define maxn 100
 
 using namespace std;
 
@@ -25,7 +26,7 @@ bool breadthFirstSearch(int s, int t) {
     level[s] = 0;                           // inicia o nivel de s como nivel 0
 
     // Aqui e feita a busca em largura no grafo
-    while (!q.empty()) {                    
+    while (!q.empty()) {
         int u = q.front();                  // pega o primeiro vertice na fila
         q.pop();                            // retira o vertice
         // percorre a adjacencia do vertice atual
@@ -56,7 +57,7 @@ int depthFirstSearch(int u, int t, int flow) {
             int f = min(flow, g[u][v]);     // o fluxo que passa por esse caminho e o minimo entre o que passa por essa aresta e o fluxo que esta chegando
             int gargalo = depthFirstSearch(v, t, f);     // chama a busca para este novo vertice
             // se o gargalo foi maior que 0, foi possivel passar algum fluxo pelo caminho
-            if (gargalo > 0) {              
+            if (gargalo > 0) {
                 g[u][v] -= gargalo;         // subtrai o fluxo que foi passado da aresta atual
                 g[v][u] += gargalo;         // aumenta o fluxo na aresta de residuos
                 return gargalo;             // retorna o fluxo que foi passado por este caminho, afinal a dfs tenta achar um caminho por vez
@@ -73,7 +74,7 @@ int depthFirstSearch(int u, int t, int flow) {
 */
 int dinicFlow(int s, int t) {
     int flow = 0;                       // inicializa o fluxo maximo com 0
-    
+
     // enquanto houver caminho para o target, realiza a busca em largura para montar o grafo de niveis
     while (breadthFirstSearch(s, t)) {
         // enquanto houverem caminhos de aumento no grafo de niveis, realiza a busca em profundidade
@@ -85,6 +86,18 @@ int dinicFlow(int s, int t) {
     return flow;
 }
 
+void printGraph() {
+    printf("  ");
+    for (int i = 1; i <= n; i++) printf("%3d ", i);
+    puts("");
+    for (int i = 1; i <= n; i++) {
+        printf("%2d", i);
+        for (int j = 1; j <= n; j++) {
+            printf("%3d ", g[i][j]);
+        }cout << endl;
+    }cout << endl;
+}
+
 int main (int argc, char *argv[]) {
 
     // Modelagem
@@ -94,17 +107,12 @@ int main (int argc, char *argv[]) {
 		g[u][v] = f;
 	}
 
-	printf("  ");
-	for (int i = 1; i <= n; i++) printf("%3d ", i);
-	puts("");
-	for (int i = 1; i <= n; i++) {
-		printf("%2d", i);
-		for (int j = 1; j <= n; j++) {
-			printf("%3d ", g[i][j]);
-		}cout << endl;
-	}cout << endl;
+  auto start = chrono::high_resolution_clock::now();
+	int fluxo = dinicFlow(s, t);
+  auto end = chrono::high_resolution_clock::now();
+  chrono::duration<double> elapsed = end - start;
+  cout << "Fluxo Maximo de veículos por hora: " << fluxo << endl;
+  cout << "Tempo de Execucao: " << elapsed.count() << endl;
 
-	cout << dinicFlow(s, t) << endl;
-
-    return 0;
+  return 0;
 }

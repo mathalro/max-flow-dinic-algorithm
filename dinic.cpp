@@ -4,6 +4,7 @@
 #include <climits>                          // utlizacao do max_int
 #include <cstdio>                           // utilizacao de saida formatada
 #include <chrono>                           // medir o tempo
+#include <fstream>                          // leitura de arquivo
 
 #define maxn 100
 
@@ -100,7 +101,16 @@ void printGraph() {
 
 int main (int argc, char *argv[]) {
 
-    // Modelagem
+  if (argc != 2) {
+    cout << "A execucao deve seguir o padrao: ./dinic <arquivo>" << endl;
+    return 1;
+  }
+
+  // redireciona entrada de dados
+  ifstream in(argv[1]);
+  cin.rdbuf(in.rdbuf());
+
+  // Modelagem
 	int m, s, t; cin >> n >> m >> s >> t;
 	for (int i = 0; i < m; i++) {
 		int u, v, f; cin >> u >> v >> f;
